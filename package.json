@@ -1,0 +1,13 @@
+{
+  "name": "speedy-click",
+  "version": "1.0.0",
+  "description": "Click the most",
+  "private": true,
+  "devDependencies": {
+    "gulp": "^3.8.8"
+  },
+  "dependencies": {
+    "laravel-elixir": "^4.0.0",
+    "bootstrap-sass": "^3.0.0"
+  }
+}
