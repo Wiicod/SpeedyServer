@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Player;
 use App\Score;
 use Response;
+use GeoIP;
 
 class PlayerController extends Controller
 {
@@ -48,6 +49,7 @@ class PlayerController extends Controller
     public function store(Request $request)
     {
         //
+
         if(Input::get('username')&&Input::get('email')){
 
             $p = new Player();
@@ -56,6 +58,9 @@ class PlayerController extends Controller
             if(Input::get('telephone')){
                 $p->telephone=Input::get('telephone');
             }
+            $location = GeoIP::getLocation();
+            $p->country=$location["country"];
+            $p->isocode=$location["isoCode"];
             $p->save();
 
             return Response::json(array(
@@ -124,6 +129,9 @@ class PlayerController extends Controller
             if(Input::get('telephone')){
                 $p->telephone=Input::get('telephone');
             }
+            $location = GeoIP::getLocation();
+            $p->country=$location["country"];
+            $p->isocode=$location["isoCode"];
             $p->save();
             return Response::json(array(
                 'player'=>  $p ,
