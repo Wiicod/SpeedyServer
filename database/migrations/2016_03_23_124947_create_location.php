@@ -24,6 +24,7 @@ class CreateLocation extends Migration
 
         Schema::table('players', function (Blueprint $table) {
             $table->string('country');
+            $table->string('city');
             $table->string('isocode');
         });
     }
@@ -38,6 +39,7 @@ class CreateLocation extends Migration
         //
         Schema::table('players', function (Blueprint $table) {
             $table->dropColumn('country');
+            $table->dropColumn('city');
             $table->dropColumn('isocode');
         });
 

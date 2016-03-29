@@ -60,6 +60,7 @@ class PlayerController extends Controller
             }
             $location = GeoIP::getLocation();
             $p->country=$location["country"];
+            $p->city=$location["city"];
             $p->isocode=$location["isoCode"];
             $p->save();
 
@@ -131,6 +132,7 @@ class PlayerController extends Controller
             }
             $location = GeoIP::getLocation();
             $p->country=$location["country"];
+            $p->city=$location["city"];
             $p->isocode=$location["isoCode"];
             $p->save();
             return Response::json(array(

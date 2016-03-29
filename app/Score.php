@@ -14,6 +14,9 @@ class Score extends Model
     }
 
     public function getTypeAttribute($value){
-        return $value==1 ?"classic":"zen";
+        return Score::format_type($value);
+    }
+    public  static function format_type($val){
+        return $val==1 ?"classic":"zen";
     }
 }

@@ -57,7 +57,9 @@ class ScoreController extends Controller
         }
         if(Input::get('player')&&Input::get('click')&&Input::get('type')&&Input::get('speed')){
 
-            $s = Score::where('player_id','=',Input::get('player'))->where('type','=',Input::get('type'))->first();
+            $type=Score::format_type(Input::get('type'));
+
+            $s = Score::where('player_id','=',Input::get('player'))->where('type','=',$type)->first();
             if($s !=null){
                 return $this->update($request,$s->id);
             }
@@ -65,7 +67,7 @@ class ScoreController extends Controller
             $s = new Score();
             $s->click= Input::get('click');
             $s->speed= Input::get('speed');
-            $s->type=Input::get('type')=="classic"?true:false;
+            $s->type=Input::get('type')==$type;
             $s->player()->associate($p);
             $s->save();
 
@@ -121,29 +123,30 @@ class ScoreController extends Controller
     public function update(Request $request, $id)
     {
         //
-        $p = Player::find(Input::get('player'));
-        if($p==null){
-            return Response::json(array(
-                'error'=>  'jouer non trouve' ,
-            ), 404);
-        }
-        if(Input::get('player')&&Input::get('click')&&Input::get('type')&&Input::get('speed')){
-
-            $s = Score::find($id);
-            if($s==null){
+        if(Input::get('player')&&Input::get('type')&&Input::get('click')&&Input::get('speed')){
+            $p = Player::find(Input::get('player'));
+            if($p==null){
                 return Response::json(array(
-                    'error'=>  'score non trouve' ,
+                    'error'=>  'jouer non trouve' ,
                 ), 404);
             }
+            $s = Score::find($id);
+            $type=Score::format_type(Input::get('type'));
+            /*$s = Score::where("player_id","=",$p->id)->where("type","=",$type)->first();
+            if($s==null){
+                $this->store($request);
+            }*/
             $s->click= Input::get('click');
             $s->speed= Input::get('speed');
-            $s->type=Input::get('type')=="classic"?true:false;
-            $s->player()->associate($p);
+
             $s->save();
             return Response::json(array(
                 'score'=>  $s ,
             ), 200);
-        }else{
+
+
+        }
+        else{
             return Response::json(array(
                 'error'=>  'Veuillez renseigner le nombre de click (click)
                  la vitesse (speed) le type (classic ou zen ) et l\id du  jouer (player) et l\'email du jouer' ,
