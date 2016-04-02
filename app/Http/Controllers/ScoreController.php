@@ -144,7 +144,6 @@ class ScoreController extends Controller
                 'score'=>  $s ,
             ), 200);
 
-
         }
         else{
             return Response::json(array(
@@ -163,5 +162,16 @@ class ScoreController extends Controller
     public function destroy($id)
     {
         //
+        $s = Score::find($id);
+        if($s==null){
+            return Response::json(array(
+                'error'=>  'score non trouve' ,
+            ), 404);
+        }
+
+        $s->delete();
+        return Response::json(array(
+            'msg'=>  'score supprimer avec succes' ,
+        ), 200);
     }
 }

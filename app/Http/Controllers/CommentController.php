@@ -3,14 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Input;
-use App\Http\Requests;
-use App\Player;
-use App\Score;
-use Response;
-use GeoIP;
 
-class PlayerController extends Controller
+use App\Http\Requests;
+use App\Comment;
+use App\Player;
+use Response;
+use Illuminate\Support\Facades\Input;
+
+
+class CommentController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -23,7 +24,7 @@ class PlayerController extends Controller
         if ($id == null) {
 
             return Response::json(array(
-                'players'=>  Player::with('scores')->orderBy('id', 'asc')->get() ,
+                'comments'=>  Comment::with('player')->orderBy('id', 'asc')->get() ,
             ), 200);
         } else {
             return $this->show($id);
@@ -49,27 +50,28 @@ class PlayerController extends Controller
     public function store(Request $request)
     {
         //
+        $p = Player::find(Input::get('player'));
+        if($p==null){
+            return Response::json(array(
+                'error'=>  'jouer non trouve' ,
+            ), 404);
+        }
+        if(Input::get('player')&&Input::get('title')&&Input::get('description')){
 
-        if(Input::get('username')&&Input::get('email')){
 
-            $p = new Player();
-            $p->username= Input::get('username');
-            $p->email= Input::get('email');
-            if(Input::get('telephone')){
-                $p->telephone=Input::get('telephone');
-            }
-            $location = GeoIP::getLocation();
-            $p->country=$location["country"];
-            $p->city=$location["city"];
-            $p->isocode=$location["isoCode"];
-            $p->save();
+
+            $c = new Comment();
+            $c->title= Input::get('title');
+            $c->description= Input::get('description');
+            $c->player()->associate($p);
+            $c->save();
 
             return Response::json(array(
-                'player'=>  $p ,
+                'comment'=>  $c ,
             ), 200);
         }else{
             return Response::json(array(
-                'error'=>  'Veuillez renseigner le username et l\'email du jouer' ,
+                'error'=>  'Veuillez renseigner le titre (title) la description (description)  et l\id du  jouer (player)' ,
             ), 405);
         }
     }
@@ -83,15 +85,14 @@ class PlayerController extends Controller
     public function show($id)
     {
         //
-
-        $p= Player::find($id);
-        if($p){
+        $c= Comment::find($id);
+        if($c){
             return Response::json(array(
-                'player'=>  $p ,
+                'comment'=>  $c ,
             ), 200);
         }else{
             return Response::json(array(
-                'error'=>  'jouer non trouve' ,
+                'error'=>  'commentaire non trouve' ,
             ), 404);
         }
     }
@@ -117,32 +118,6 @@ class PlayerController extends Controller
     public function update(Request $request, $id)
     {
         //
-        if(Input::get('username')&&Input::get('email')){
-
-            $p = Player::find($id);
-            if($p==null){
-                return Response::json(array(
-                    'error'=>  'jouer non trouve' ,
-                ), 404);
-            }
-            $p->username= Input::get('username');
-            $p->email= Input::get('email');
-            if(Input::get('telephone')){
-                $p->telephone=Input::get('telephone');
-            }
-            $location = GeoIP::getLocation();
-            $p->country=$location["country"];
-            $p->city=$location["city"];
-            $p->isocode=$location["isoCode"];
-            $p->save();
-            return Response::json(array(
-                'player'=>  $p ,
-            ), 200);
-        }else{
-            return Response::json(array(
-                'error'=>  'Veuillez renseigner le username et l\'email du jouer' ,
-            ), 405);
-        }
     }
 
     /**
@@ -154,16 +129,16 @@ class PlayerController extends Controller
     public function destroy($id)
     {
         //
-        $p = Player::find($id);
-        if($p==null){
+        $c = Comment::find($id);
+        if($c==null){
             return Response::json(array(
-                'error'=>  'jouer non trouve' ,
+                'error'=>  'commentaire non trouve' ,
             ), 404);
         }
 
-        $p->delete();
+        $c->delete();
         return Response::json(array(
-            'msg'=>  'jouer supprimer avec succes' ,
+            'msg'=>  'commentaire supprimer avec succes' ,
         ), 200);
     }
 }

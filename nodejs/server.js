@@ -11,6 +11,7 @@ var io = require('socket.io')(server);
 var redis = require('redis');
 
 server.listen(8890);
+console.log("Listening.....");
 io.on('connection', function (socket) {
 
     console.log("new client connected");
