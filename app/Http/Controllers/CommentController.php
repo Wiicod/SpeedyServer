@@ -51,12 +51,8 @@ class CommentController extends Controller
     {
         //
         $p = Player::find(Input::get('player'));
-        if($p==null){
-            return Response::json(array(
-                'error'=>  'jouer non trouve' ,
-            ), 404);
-        }
-        if(Input::get('player')&&Input::get('title')&&Input::get('description')){
+
+        if(Input::get('title')&&Input::get('description')){
 
 
 

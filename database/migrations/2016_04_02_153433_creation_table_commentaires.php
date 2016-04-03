@@ -24,6 +24,15 @@ class CreationTableCommentaires extends Migration
 
         });
 
+
+        Schema::table('players', function ($table) {
+            $table->dropColumn('telephone');
+        });
+
+        Schema::table('players', function ($table) {
+            $table->string('telephone')->nullable();
+        });
+
     }
 
     /**
@@ -35,5 +44,11 @@ class CreationTableCommentaires extends Migration
     {
         //
         Schema::drop('comments');
+        Schema::table('players', function ($table) {
+            $table->dropColumn('telephone');
+        });
+        Schema::table('players', function (Blueprint $table) {
+            $table->string('telephone')->unique()->nullable();
+        });
     }
 }
