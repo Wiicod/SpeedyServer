@@ -9,7 +9,8 @@
         "laravel/framework": "5.2.*",
         "torann/geoip": "dev-master",
         "predis/predis": "~1.1@dev",
-        "doctrine/dbal":"*"
+        "doctrine/dbal":"*",
+        "serverfireteam/panel": "^1.4"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

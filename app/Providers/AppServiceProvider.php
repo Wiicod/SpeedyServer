@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\ServiceProvider;
+use App\Comment;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -14,6 +16,17 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         //
+        Comment::created(function($c){
+
+            $this->alert($c);
+        });
+        Comment::updated(function($c){
+            $this->alert($c);
+        });
+        Comment::deleted(function($c){
+            $c->status="Supprime";
+            $this->alert($c);
+        });
     }
 
     /**
@@ -24,5 +37,14 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         //
+    }
+
+    public function alert(Comment $c){
+        $to= env("MAIL_USERNAME");
+        Mail::send(['emails.alert','emails.alert-text'],['comment' => $c],function($message) use ($c,$to){
+
+            $message->to($to)
+                ->subject($c->title." ( Speedy-click commentaire )");
+        });
     }
 }
